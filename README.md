@@ -1,7 +1,9 @@
 # AWS Certified Data Analytics Specialty (DAS-C01)
 
 Brought to you by:
+
 Brock Tubre
+
 John Hanna
 
 ## Greetings
