@@ -1,0 +1,1 @@
+aws s3api put-bucket-lifecycle-configuration --bucket das-demos --lifecycle-configuration file://ArchivePolicy.json
