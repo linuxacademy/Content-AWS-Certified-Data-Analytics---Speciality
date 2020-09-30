@@ -1,5 +1,10 @@
 # Spectrum Queries
 
+## Number of rows in spectrum.sales
+```SQL
+select count(*) from spectrum.sales;
+```
+
 ## First 10 rows from spectrum.sales
 ```SQL
 select * from spectrum.sales limit 10;
