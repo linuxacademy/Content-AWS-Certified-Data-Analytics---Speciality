@@ -8,8 +8,8 @@ import time
 # Initialize interfaces
 s3Client = boto3.client('s3',
                         region_name='us-east-1',
-                        aws_access_key_id='AKIAZ7SV7YPMA52CV7BP',
-                        aws_secret_access_key='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')
+                        aws_access_key_id='XYZ',
+                        aws_secret_access_key='xyz')
 s3Resource = boto3.resource('s3')
 count = 1
 number_of_results = 500
