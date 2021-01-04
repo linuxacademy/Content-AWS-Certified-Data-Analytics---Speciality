@@ -1,6 +1,6 @@
 # AWS CERTIFIED DATA ANALYTICS SPECIALTY
 An A Cloud Guru Course - 
-[AWS Certified Data Analytics Specialty](https://acloud.guru/learn/312375cd-c136-4f1c-81dc-dbdcfff2d06b)
+[AWS Certified Data Analytics Specialty](https://acloud.guru/overview/312375cd-c136-4f1c-81dc-dbdcfff2d06b)
 
 In late 2019, AWS announced that they would be renaming the AWS Big Data Specialty certification to the AWS Data Analytics specialty certification. With these changes there are some carry over topics but many of the topics are brand new and more in-depth. This course is designed and tailored to teach you the new services and tools that you can use in AWS to build data analytics applications, as well as build and manage the lifecycle of collecting, storing, processing, and visualizing your data. 
 
@@ -10,7 +10,7 @@ Join us in the course where we cover major tools, topics, and services needed fo
 
 Prepared by [Brock Tubre](https://learn.acloud.guru/profile/brock-tubre) and [John Hanna](https://learn.acloud.guru/profile/john-hanna) 2020
 
-Files for A Cloud Guru, Course - [AWS Certified Data Analytics Specialty](https://acloud.guru/learn/312375cd-c136-4f1c-81dc-dbdcfff2d06b)
+Files for A Cloud Guru, Course - [AWS Certified Data Analytics Specialty](https://acloud.guru/overview/312375cd-c136-4f1c-81dc-dbdcfff2d06b)
 
 ## In this course you'll learn:
 - The domains of knowledge for the AWS Certified Data Analytics Specialty exam.
