@@ -1,0 +1,217 @@
+Resources:
+  AccessKey:
+    Type: AWS::IAM::AccessKey
+    Properties:
+      UserName: cloud_user
+  LambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: "/"
+      Policies:
+        - PolicyName: EC2AccessRole
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+            - Effect: Allow
+              Action:
+              - ec2:*
+              Resource: "*"
+            - Effect: Allow
+              Action:
+              - logs:*
+              Resource: "*"
+
+  InitFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        ZipFile: |
+          import json
+          import boto3
+          import threading
+          import urllib3
+          SUCCESS = "SUCCESS"
+          FAILED = "FAILED"
+          http = urllib3.PoolManager()
+          def send(event, context, responseStatus, responseData, physicalResourceId=None, noEcho=False, reason=None):
+              responseUrl = event['ResponseURL']
+              print(responseUrl)
+              responseBody = {}
+              responseBody['Status'] = responseStatus
+              responseBody['Reason'] = reason or "See the details in CloudWatch Log Stream: {}".format(context.log_stream_name)
+              responseBody['PhysicalResourceId'] = physicalResourceId or context.log_stream_name
+              responseBody['StackId'] = event['StackId']
+              responseBody['RequestId'] = event['RequestId']
+              responseBody['LogicalResourceId'] = event['LogicalResourceId']
+              responseBody['NoEcho'] = noEcho
+              responseBody['Data'] = responseData
+              json_responseBody = json.dumps(responseBody)
+              print("Response body:\n" + json_responseBody)
+              headers = {
+                  'content-type' : '',
+                  'content-length' : str(len(json_responseBody))
+              }
+              try:
+                  response = http.request('PUT',responseUrl,headers=headers,body=json_responseBody)
+                  print("Status code: {}".format(str(response.status)))
+              except Exception as e:
+                  print("send(..) failed executing requests.put(..): " + str(e))
+          def createDefault():
+              print("Creating default VPC")
+              ec2 = boto3.client('ec2')
+              response = ec2.create_default_vpc()
+              return response
+          def deleteDefault():
+              return ""
+          def timeout(event, context):
+              print('Timing out, sending failure response to CFN')
+              send(event, context, FAILED, {}, None)
+          def lambda_handler(event, context):
+              print(f'Received event: {json.dumps(event)}')
+              timer = threading.Timer((context.get_remaining_time_in_millis() / 1000.00) - 0.5, timeout, args=[event, context])
+              timer.start()
+              status = SUCCESS
+              responseData = {}
+              try:
+                  if event['RequestType'] == 'Delete':
+                      deleteDefault()
+                  else:
+                      response = createDefault()
+                      print(response)
+                      responseData['Data'] = response
+              except Exception as e:
+                  print(e)
+                  status = FAILED
+              finally:
+                  timer.cancel()
+                  send(event, context, status, responseData, None)
+      Handler: index.lambda_handler
+      Role: !GetAtt LambdaRole.Arn
+      Runtime: python3.7
+      Timeout: 60
+
+  InitializeVPC:
+    Type: Custom::InitFunction
+    Properties:
+      ServiceToken: !GetAtt InitFunction.Arn
+  LnSecurityGroupWebservers:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: !Sub 'Security Group created with CF template for web servers.'
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: !Sub '${AWS::StackName}-kinesis-helper-webserver-sg'
+        - Key: Description
+          Value: !Sub 'Security Group created for web servers with ${AWS::StackName}.'
+  LnCreateKinesisHelperServer:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.medium
+      ImageId:
+        Fn::FindInMap:
+        - RegionMap
+        - !Ref AWS::Region
+        - AMI
+      Tags:
+        - Key: Name
+          Value: !Join [ '-', [!Sub '${AWS::StackName}', 'kinesis-helper-server'] ]
+      SecurityGroupIds:
+        - !Ref LnSecurityGroupWebservers
+      UserData:
+        Fn::Base64:
+          !Join [ "", [
+            "#!/bin/bash -xe\n",
+            "yum update -y\n",
+            "sudo /opt/aws/bin/cfn-init -v ", #use cfn-init to install packages in cloudformation init
+            !Sub "--stack ${AWS::StackName} ",
+            "--resource LnEC2InstanceWS1V1 ",
+            "--configsets InstallAndConfigure ",
+            !Sub "--region ${AWS::Region}",
+            "\n"] ]
+    Metadata:
+      AWS::CloudFormation::Init:
+        configSets: 
+          InstallAndConfigure:
+            - "install_dependecies"
+            - "get_html"
+            - "create_landing_page"
+        install_dependecies: 
+          packages: 
+            yum: 
+              httpd: []
+          services: 
+            sysvinit: 
+              httpd: 
+                enabled: true
+                ensureRunning: true
+          commands:
+            test:
+              command: yum install git -y
+        get_html:
+          commands:
+            test:
+              command: git clone https://github.com/ACloudGuru-Resources/course-aws-certified-advanced-networking-specialty
+              cwd: /home/ec2-user
+        create_landing_page: 
+          commands: 
+            test: 
+              command: cp -r -n ./Chapter03/html/blue/* /var/www/html/
+              cwd: /home/ec2-user/course-aws-certified-advanced-networking-specialty
+  LnCreateS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Join
+            - "-"
+            - - "angular-deploy-bucket-acg"
+              - !Select
+                - 0
+                - !Split
+                  - "-"
+                  - !Select
+                    - 2
+                    - !Split
+                      - "/"
+                      - !Ref "AWS::StackId"
+      PublicAccessBlockConfiguration:
+          BlockPublicAcls: FALSE
+          BlockPublicPolicy: FALSE
+          IgnorePublicAcls: FALSE
+          RestrictPublicBuckets: FALSE
+      WebsiteConfiguration:
+          ErrorDocument: 'index.html'
+          IndexDocument: 'index.html'
+  LnPublicWebsiteBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref LnCreateS3Bucket
+      PolicyDocument:
+        Id: ReportPolicy
+        Version: "2012-10-17"
+        Statement:
+          - Sid: AllowPublicRead
+            Effect: Allow
+            Action: "s3:GetObject"
+            Principal:
+              AWS: "*"
+            Resource: !Join ['', ['arn:aws:s3:::', !Ref LnCreateS3Bucket, '/*']]
+Outputs:
+  pubIpAddress1:
+    Description: cloud_user Access Key
+    Value: !Ref AccessKey
+  pubIpAddress2:
+    Description: cloud_user Secret Access Key
+    Value: !GetAtt AccessKey.SecretAccessKey

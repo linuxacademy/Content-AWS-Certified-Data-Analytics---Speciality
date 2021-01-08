@@ -130,3 +130,6 @@ dmypy.json
 
 # System Files
 .DS_Store
+
+*/node_modules
+*/dist
