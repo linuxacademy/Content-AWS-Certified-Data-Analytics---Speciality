@@ -1,0 +1,61 @@
+
+<!-- Navbar content -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a href="https://acloud.guru/">
+    <img src="/assets/acloudguru_long_logo.png" width="300" class="d-inline-block align-top brand-img" alt="A Cloud Guru Logo">
+  </a>
+</nav>
+
+<!-- Content for the main page -->
+<div class="container-fluid background">
+    <div class="container tools-body">
+      <div class="row">
+        <div class="header text-center">
+          <div class="jumbotron">
+              <div class="row mx-auto d-block">
+                <img class="ansible-logo col-4" src="../assets/docker_logo.png" alt="docker logo"/>
+                <img class="ansible-logo col-4" src="../assets/angular_logo.png" alt="angular logo"/>
+                <img class="ansible-logo col-4" src="../assets/ansible_logo.png" alt="ansible logo"/>
+              </div>
+              <h1 class="display-3">{{title}}</h1>
+              <p class="lead">This application is a simple example of how to use Docker + Angular + Ansible. This simple application uses Docker to containerize an Angular app and uses Ansible to load and configure the build and distribution of the Angular application.</p>
+              <p><a class="btn btn btn-success" href="https://github.com/brocktubre/dockerized-angular-app" role="button">See source code <i class="fa fa-code"></i></a></p>
+            </div>
+            <!-- <img class="mx-auto d-block" style="max-width: 1000px; padding-top: 50px;"src="../assets/middle_img.png" alt="Image"> -->
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <div class="info-item">
+              <h3> 1. Build Docker Image </h3>
+              <p> To build the Docker image use the following: docker image build -t ubuntu-angular .</p>
+          </div>
+          <div class="info-item">
+              <h3> 2. Run The Docker Container </h3>
+              <p> Run the docker container: docker run ubuntu-angular </p>
+          </div>
+          <div class="info-item">
+              <h3> 3. Run App Locally </h3>
+              <p> Run the angular app (must be inside site folder): ng serve</p>
+          </div>
+        </div>
+        <div class="col-6">
+            <div class="info-item">
+                <h3> 4. Docker Installs </h3>
+                <p> Docker installs the ubuntu container and things like apache, ansible, and nodejs.</p>
+            </div>
+            <div class="info-item">
+                <h3> 5. Ansible Configurations </h3>
+                <p> Ansible removes the node_modules, runs npm install, packages the Angular app, and deploys it to /var/www/html directory.</p>
+            </div>
+            <div class="info-item">
+                <h3> 6. Apache Serves App </h3>
+                <p> Apache serves the application. </p>
+            </div>
+        </div>
+      </div>
+    <footer class="footer">
+      <p>© Copyright {{date}}</p>
+    </footer>
+  </div>
+</div>

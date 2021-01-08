@@ -1,0 +1,28 @@
+---
+  - hosts: local
+    become: true
+    tasks:
+      - name: Install angular-cli
+        npm: 
+          name: "@angular/cli"
+          global: yes
+          state: present
+      - name: Remove node_modules
+        file:
+          name: /tmp/site/node_modules
+          state: absent
+      - name: Install npm dependencies
+        npm:
+          name: install
+          path: /tmp/site
+      - name: Build distribution
+        command: ng build --prod
+        args:
+          chdir: /tmp/site
+      - name: Copying site contents to /var/www/html
+        copy:
+          src: /tmp/site/dist/site/
+          dest: /var/www/html
+          owner: root
+          group: root
+          mode: '0644'

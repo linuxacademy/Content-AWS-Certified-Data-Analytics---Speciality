@@ -1,0 +1,37 @@
+
+<!-- Navbar content -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a href="https://acloud.guru/">
+    <img src="/assets/acloudguru_long_logo.png" width="300" class="d-inline-block align-top brand-img" alt="A Cloud Guru Logo">
+  </a>
+</nav>
+
+<!-- Content for the main page -->
+<div class="container-fluid background">
+    
+    <div class="container col-md-4 col-sm-4 col-lg-2 col-xl-2 form-group" style="padding-top: 100px">
+      <div *ngIf="someError"  class="text-center">
+        <span class="alert alert-danger col-md-12">{{someErrorMessage}}</span>
+      </div>
+      <div class="row k-input"><input autofocus class="form-control" type="text" value="" placeholder="Kinesis Stream Name" #streamName /></div>
+      <div class="row k-input"><input autofocus class="form-control" type="text" value="" placeholder="AWS Region" #region /></div>
+      <div class="row k-input"><input autofocus class="form-control" type="text" value="" placeholder="Access Key" #accessKey /></div>
+      <div class="row k-input"><input autofocus class="form-control" type="text" value="" placeholder="Secret Access Key" #secretAccessKey /></div>
+      <div *ngIf="!isLoadingData" class="row k-input" >
+        <button class="btn btn-success form-control" style="margin-top: 20px;" (click)="startStream()"> Start Streaming Data </button>
+      </div>
+      <div *ngIf="isLoadingData"  class="container text-center" style="margin-top: 20px;">
+        <i class="fa fa-circle-o-notch fa-spin" style="font-size:50px"></i>
+      </div>
+      <div  *ngIf="isLoadingData" class="row k-input">
+        <button class="btn btn-danger form-control" style="margin-top: 20px;" (click)="stopStream()"> Stop Streaming Data </button>
+      </div>
+    </div>
+    <div class="container col-md-12 col-sm-12 text-center" style="padding-top: 50px;">
+        <div *ngIf="isLoadingData">
+          <code>
+              <h3 class="text-dark">{{streamingData}}</h3>
+          </code>
+        </div>
+    </div>
+</div>
