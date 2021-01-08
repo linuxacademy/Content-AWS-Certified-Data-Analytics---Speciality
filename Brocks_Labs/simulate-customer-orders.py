@@ -7,8 +7,8 @@ import time
 
 client = boto3.client('kinesis',
                         region_name='us-east-1',
-                        aws_access_key_id='AKIAYKQTFN3DBO6PCFUW',
-                        aws_secret_access_key='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')
+                        aws_access_key_id='XXX',
+                        aws_secret_access_key='XXX')
 # partition_key = str(uuid.uuid4())
 
 number_of_results = 500
