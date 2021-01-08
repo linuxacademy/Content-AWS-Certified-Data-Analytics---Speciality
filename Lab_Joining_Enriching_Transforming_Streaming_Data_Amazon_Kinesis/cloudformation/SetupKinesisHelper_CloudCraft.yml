@@ -1,3 +1,8 @@
+Description: 
+  This is a template that launches an EC2 instance and deploys a dockerized angular app 
+  to a public EC2 instance. The EC2 instance is configured using files from 
+  github repository here - https://github.com/linuxacademy/Content-AWS-Certified-Data-Analytics---Speciality 
+  This template also sets up a DynamoDB table and populates it with some data.
 Mappings:
   RegionMap:
     us-east-1:
@@ -107,6 +112,7 @@ Resources:
     Type: Custom::InitFunction
     Properties:
       ServiceToken: !GetAtt InitFunction.Arn
+
   LnSecurityGroupWebserver:
     Type: AWS::EC2::SecurityGroup
     DependsOn:
@@ -123,6 +129,7 @@ Resources:
           Value: !Sub '${AWS::StackName}-kinesis-helper-webserver-sg'
         - Key: Description
           Value: !Sub 'Security Group created for kinesis web server with ${AWS::StackName}.'
+
   LnCreateKinesisHelperServer:
     Type: AWS::EC2::Instance
     DependsOn:
@@ -143,11 +150,16 @@ Resources:
         Fn::Base64:
           !Join [ "", [
             "#!/bin/bash -xe\n",
+            # !Sub "echo 'WaitHandle ${WaitHandle}'\n",
             "yum update -y\n",
-            "sudo /opt/aws/bin/cfn-init -v ", #use cfn-init to install packages in cloudformation init
+            "/opt/aws/bin/cfn-init -v ", #use cfn-init to install packages in cloudformation init
             !Sub "--stack ${AWS::StackName} ",
             "--resource LnCreateKinesisHelperServer ",
             "--configsets InstallAndConfigure ",
+            !Sub "--region ${AWS::Region}\n",
+            !Sub "/opt/aws/bin/cfn-signal -e $? ",
+            !Sub "--stack ${AWS::StackName} ",
+            "--resource LnCreateKinesisHelperServer ",
             !Sub "--region ${AWS::Region}",
             "\n"] ]
     Metadata:
@@ -172,6 +184,29 @@ Resources:
             test: 
               command: docker run -d -p 80:80 ubuntu-angular
               cwd: /home/ec2-user/Content-AWS-Certified-Data-Analytics---Speciality/Lab_Joining_Enriching_Transforming_Streaming_Data_Amazon_Kinesis/dockerized-angular-app
+    CreationPolicy:
+      ResourceSignal:
+        Count: 1
+        Timeout: PT5M
+  # WaitHandle: 
+  #   Type: AWS::CloudFormation::WaitConditionHandle
+  # WaitCondition:
+  #   Type: AWS::CloudFormation::WaitCondition
+  #   DependsOn: LnCreateKinesisHelperServer
+  #   Properties: 
+  #     Handle: !Ref WaitHandle
+  #     Timeout: '600' # Wait up to 5 mins
+  LnDynamoDBUserTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: user_id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: user_id
+          KeyType: HASH
+      TableName: users-information
+      BillingMode: PAY_PER_REQUEST
 Outputs:
   pubIpAddress1:
     Description: cloud_user Access Key
@@ -179,3 +214,6 @@ Outputs:
   pubIpAddress2:
     Description: cloud_user Secret Access Key
     Value: !GetAtt AccessKey.SecretAccessKey
+  pubIpAddress3:
+    Description: Public IP address of Kinesis Helper Server
+    Value: !GetAtt LnCreateKinesisHelperServer.PublicIp
