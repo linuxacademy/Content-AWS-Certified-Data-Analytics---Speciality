@@ -1,7 +1,7 @@
 Mappings:
   RegionMap:
     us-east-1:
-      AMI: ami-0f83481008278f797
+      AMI: ami-00f44084952227ef0
 Resources:
   AccessKey:
     Type: AWS::IAM::AccessKey
@@ -154,15 +154,10 @@ Resources:
       AWS::CloudFormation::Init:
         configSets: 
           InstallAndConfigure:
-            - "install_dependecies"
-            - "get_html"
+            - "get_angular_app"
             - "build_docker_image"
             - "docker_run_app"
-        install_dependecies: 
-          commands:
-            test:
-              command: yum install git -y
-        get_html:
+        get_angular_app:
           commands:
             test:
               command: git clone --single-branch --branch brocks-labs-branch https://github.com/linuxacademy/Content-AWS-Certified-Data-Analytics---Speciality

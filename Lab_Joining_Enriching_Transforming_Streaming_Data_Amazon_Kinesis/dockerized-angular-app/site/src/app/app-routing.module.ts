@@ -4,7 +4,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 const routes: Routes = [
-    { path: '', component: HomeComponent },
+    { path: '', component: KinesisHelperComponent },
     { path: 'kinesis-helper', component: KinesisHelperComponent },
     { path: '**', redirectTo: '' }
     
