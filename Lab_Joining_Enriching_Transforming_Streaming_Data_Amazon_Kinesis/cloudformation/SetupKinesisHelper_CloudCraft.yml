@@ -103,7 +103,7 @@ Resources:
     Type: Custom::InitFunction
     Properties:
       ServiceToken: !GetAtt InitFunction.Arn
-  LnSecurityGroupWebservers:
+  LnSecurityGroupWebserver:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: !Sub 'Security Group created with CF template for web servers.'
@@ -116,7 +116,7 @@ Resources:
         - Key: Name
           Value: !Sub '${AWS::StackName}-kinesis-helper-webserver-sg'
         - Key: Description
-          Value: !Sub 'Security Group created for web servers with ${AWS::StackName}.'
+          Value: !Sub 'Security Group created for kinesis web server with ${AWS::StackName}.'
   LnCreateKinesisHelperServer:
     Type: AWS::EC2::Instance
     Properties:
@@ -130,7 +130,7 @@ Resources:
         - Key: Name
           Value: !Join [ '-', [!Sub '${AWS::StackName}', 'kinesis-helper-server'] ]
       SecurityGroupIds:
-        - !Ref LnSecurityGroupWebservers
+        - !Ref LnSecurityGroupWebserver
       UserData:
         Fn::Base64:
           !Join [ "", [
@@ -138,7 +138,7 @@ Resources:
             "yum update -y\n",
             "sudo /opt/aws/bin/cfn-init -v ", #use cfn-init to install packages in cloudformation init
             !Sub "--stack ${AWS::StackName} ",
-            "--resource LnEC2InstanceWS1V1 ",
+            "--resource LnCreateKinesisHelperServer ",
             "--configsets InstallAndConfigure ",
             !Sub "--region ${AWS::Region}",
             "\n"] ]
@@ -148,66 +148,27 @@ Resources:
           InstallAndConfigure:
             - "install_dependecies"
             - "get_html"
-            - "create_landing_page"
+            - "build_docker_image"
+            - "docker_run_app"
         install_dependecies: 
-          packages: 
-            yum: 
-              httpd: []
-          services: 
-            sysvinit: 
-              httpd: 
-                enabled: true
-                ensureRunning: true
           commands:
             test:
               command: yum install git -y
         get_html:
           commands:
             test:
-              command: git clone https://github.com/ACloudGuru-Resources/course-aws-certified-advanced-networking-specialty
+              command: git clone --single-branch --branch brocks-labs-branch https://github.com/linuxacademy/Content-AWS-Certified-Data-Analytics---Speciality
               cwd: /home/ec2-user
-        create_landing_page: 
+        build_docker_image: 
           commands: 
             test: 
-              command: cp -r -n ./Chapter03/html/blue/* /var/www/html/
-              cwd: /home/ec2-user/course-aws-certified-advanced-networking-specialty
-  LnCreateS3Bucket:
-    Type: AWS::S3::Bucket
-    Properties:
-      BucketName: !Join
-            - "-"
-            - - "angular-deploy-bucket-acg"
-              - !Select
-                - 0
-                - !Split
-                  - "-"
-                  - !Select
-                    - 2
-                    - !Split
-                      - "/"
-                      - !Ref "AWS::StackId"
-      PublicAccessBlockConfiguration:
-          BlockPublicAcls: FALSE
-          BlockPublicPolicy: FALSE
-          IgnorePublicAcls: FALSE
-          RestrictPublicBuckets: FALSE
-      WebsiteConfiguration:
-          ErrorDocument: 'index.html'
-          IndexDocument: 'index.html'
-  LnPublicWebsiteBucketPolicy:
-    Type: AWS::S3::BucketPolicy
-    Properties:
-      Bucket: !Ref LnCreateS3Bucket
-      PolicyDocument:
-        Id: ReportPolicy
-        Version: "2012-10-17"
-        Statement:
-          - Sid: AllowPublicRead
-            Effect: Allow
-            Action: "s3:GetObject"
-            Principal:
-              AWS: "*"
-            Resource: !Join ['', ['arn:aws:s3:::', !Ref LnCreateS3Bucket, '/*']]
+              command: docker image build -t ubuntu-angular .
+              cwd: /home/ec2-user/Content-AWS-Certified-Data-Analytics---Speciality/Lab_Joining_Enriching_Transforming_Streaming_Data_Amazon_Kinesis/dockerized-angular-app
+        docker_run_app: 
+          commands: 
+            test: 
+              command: docker run -d -p 80:80 ubuntu-angular
+              cwd: /home/ec2-user/Content-AWS-Certified-Data-Analytics---Speciality/Lab_Joining_Enriching_Transforming_Streaming_Data_Amazon_Kinesis/dockerized-angular-app
 Outputs:
   pubIpAddress1:
     Description: cloud_user Access Key
