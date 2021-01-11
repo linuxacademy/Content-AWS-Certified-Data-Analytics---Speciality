@@ -49,7 +49,12 @@ export class KinesisHelperComponent implements OnInit {
         .subscribe( payload => {
           this.isLoadingData = true;
           this.streamingData = payload;
-      }); 
+      }, error => {
+          this.isLoadingData = false;
+          this.someError = true;
+          this.someErrorMessage = error;
+          this.loadingSub.unsubscribe();
+      });
     });
   }
 

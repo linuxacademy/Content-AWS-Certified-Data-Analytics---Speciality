@@ -187,15 +187,7 @@ Resources:
     CreationPolicy:
       ResourceSignal:
         Count: 1
-        Timeout: PT5M
-  # WaitHandle: 
-  #   Type: AWS::CloudFormation::WaitConditionHandle
-  # WaitCondition:
-  #   Type: AWS::CloudFormation::WaitCondition
-  #   DependsOn: LnCreateKinesisHelperServer
-  #   Properties: 
-  #     Handle: !Ref WaitHandle
-  #     Timeout: '600' # Wait up to 5 mins
+        Timeout: PT10M
   LnDynamoDBUserTable:
     Type: AWS::DynamoDB::Table
     Properties:
@@ -207,6 +199,53 @@ Resources:
           KeyType: HASH
       TableName: users-information
       BillingMode: PAY_PER_REQUEST
+  LnLambdaExecutionAndDynamoRole:
+    Type: AWS::IAM::Role
+    DependsOn:
+      - LnDynamoDBUserTable
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service:
+            - lambda.amazonaws.com
+          Action:
+          - sts:AssumeRole
+      Path: "/"
+      Policies:
+      - PolicyName: root
+        PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: Allow
+            Action:
+            - logs:*
+            Resource: arn:aws:logs:*:*:*
+          - Effect: Allow
+            Action:
+            - dynamodb:PutItem
+            Resource: !GetAtt LnDynamoDBUserTable.Arn
+  LnPopulateDynamoDBTable:
+    Type: AWS::Lambda::Function
+    DependsOn:
+      - LnDynamoDBUserTable
+      - LnLambdaExecutionAndDynamoRole
+    Properties:
+      Code:
+        S3Bucket: !Sub 'lambda-zips-${AWS::Region}-acg'
+        S3Key: 'create-users-dynamodb-lambda.zip'
+      Handler: index.handler
+      Runtime: nodejs12.x
+      Role: !GetAtt LnLambdaExecutionAndDynamoRole.Arn
+      Timeout: 60
+  LnPopulateDynamoDBTableInit:
+    Type: Custom::LnPopulateDynamoDBTable
+    Properties:
+      ServiceToken: !GetAtt LnPopulateDynamoDBTable.Arn
+
+
 Outputs:
   pubIpAddress1:
     Description: cloud_user Access Key
@@ -216,4 +255,5 @@ Outputs:
     Value: !GetAtt AccessKey.SecretAccessKey
   pubIpAddress3:
     Description: Public IP address of Kinesis Helper Server
-    Value: !GetAtt LnCreateKinesisHelperServer.DNSName
+    Value: !GetAtt LnCreateKinesisHelperServer.PublicIp
+
