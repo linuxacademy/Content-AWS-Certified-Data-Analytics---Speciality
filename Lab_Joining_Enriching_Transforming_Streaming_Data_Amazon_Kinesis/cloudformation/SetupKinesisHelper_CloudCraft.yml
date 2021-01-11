@@ -216,4 +216,4 @@ Outputs:
     Value: !GetAtt AccessKey.SecretAccessKey
   pubIpAddress3:
     Description: Public IP address of Kinesis Helper Server
-    Value: !GetAtt LnCreateKinesisHelperServer.PublicIp
+    Value: !GetAtt LnCreateKinesisHelperServer.DNSName
