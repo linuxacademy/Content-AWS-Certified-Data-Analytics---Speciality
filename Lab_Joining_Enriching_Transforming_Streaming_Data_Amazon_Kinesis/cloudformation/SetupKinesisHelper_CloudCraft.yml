@@ -172,7 +172,7 @@ Resources:
         get_angular_app:
           commands:
             test:
-              command: git clone --single-branch --branch brocks-labs-branch https://github.com/linuxacademy/Content-AWS-Certified-Data-Analytics---Speciality
+              command: git clone --single-branch --branch brocks-labs-branch https://github.com/linuxacademy/Content-AWS-Certified-Data-Analytics---Speciality ## TODO make this the master branch
               cwd: /home/ec2-user
         build_docker_image: 
           commands: 
