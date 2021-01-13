@@ -1,4 +1,16 @@
 {
-    "key": 1,
-    "another_key": "Some text"
-}
+    "RequestType": "Create",
+    "ResponseURL": "http://pre-signed-S3-url-for-response",
+    "StackId": "arn:aws:cloudformation:us-east-1:123456789012:stack/MyStack/guid",
+    "RequestId": "unique id for this create request",
+    "ResourceType": "Custom::TestResource",
+    "LogicalResourceId": "MyTestResource",
+    "ResourceProperties": {
+      "StackName": "MyStack",
+      "List": [
+        "1",
+        "2",
+        "3"
+      ]
+    }
+  }

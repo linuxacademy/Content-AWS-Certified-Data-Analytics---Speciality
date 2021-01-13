@@ -181,6 +181,10 @@ Resources:
         FromPort: 80
         ToPort: 80
         CidrIp: 0.0.0.0/0
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: 0.0.0.0/0
       Tags:
         - Key: Name
           Value: !Sub '${AWS::StackName}-kinesis-helper-webserver-sg'
@@ -192,7 +196,7 @@ Resources:
     DependsOn:
       - LnSecurityGroupWebserver
     Properties:
-      InstanceType: t3a.medium
+      InstanceType: t2.medium
       ImageId:
         Fn::FindInMap:
         - RegionMap
@@ -244,7 +248,7 @@ Resources:
     CreationPolicy:
       ResourceSignal:
         Count: 1
-        Timeout: PT60M
+        Timeout: PT15M
 Outputs:
   pubIpAddress1:
     Description: cloud_user Access Key
