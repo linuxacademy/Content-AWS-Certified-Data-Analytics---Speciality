@@ -207,7 +207,6 @@ Resources:
         Fn::Base64:
           !Join [ "", [
             "#!/bin/bash -xe\n",
-            # !Sub "echo 'WaitHandle ${WaitHandle}'\n",
             "yum update -y\n",
             "/bin/echo '%password%' | /bin/passwd cloud_user --stdin\n",
             "/opt/aws/bin/cfn-init -v ", #use cfn-init to install packages in cloudformation init
