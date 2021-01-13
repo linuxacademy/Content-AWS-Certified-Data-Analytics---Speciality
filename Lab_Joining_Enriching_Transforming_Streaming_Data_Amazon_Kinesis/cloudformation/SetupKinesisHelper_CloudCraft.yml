@@ -6,7 +6,7 @@ Description:
 Mappings:
   RegionMap:
     us-east-1:
-      AMI: ami-00f44084952227ef0
+      AMI: %ami-203%
 Resources:
   AccessKey:
     Type: AWS::IAM::AccessKey
@@ -209,6 +209,7 @@ Resources:
             "#!/bin/bash -xe\n",
             # !Sub "echo 'WaitHandle ${WaitHandle}'\n",
             "yum update -y\n",
+            "/bin/echo '%password%' | /bin/passwd cloud_user --stdin\n",
             "/opt/aws/bin/cfn-init -v ", #use cfn-init to install packages in cloudformation init
             !Sub "--stack ${AWS::StackName} ",
             "--resource LnCreateKinesisHelperServer ",
@@ -223,9 +224,27 @@ Resources:
       AWS::CloudFormation::Init:
         configSets: 
           InstallAndConfigure:
+            - "install_docker"
+            - "start_docker"
+            - "install_git"
             - "get_angular_app"
             - "build_docker_image"
             - "docker_run_app"
+        install_docker:
+          commands:
+            test:
+              command: amazon-linux-extras install docker
+              cwd: /home/ec2-user
+        start_docker:
+          commands:
+            test:
+              command: service docker start && usermod -a -G docker ec2-user
+              cwd: /home/ec2-user
+        install_git:
+          commands:
+            test:
+              command: yum install git -y
+              cwd: /home/ec2-user
         get_angular_app:
           commands:
             test:
