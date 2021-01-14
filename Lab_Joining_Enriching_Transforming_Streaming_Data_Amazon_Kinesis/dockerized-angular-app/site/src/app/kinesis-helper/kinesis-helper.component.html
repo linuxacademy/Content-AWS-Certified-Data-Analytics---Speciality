@@ -8,11 +8,10 @@
 
 <!-- Content for the main page -->
 <div class="container-fluid background">
-    
-    <div class="container col-md-4 col-sm-4 col-lg-2 col-xl-2 form-group" style="padding-top: 100px">
-      <div *ngIf="someError"  class="text-center">
-        <span class="alert alert-danger col-md-12">{{someErrorMessage}}</span>
-      </div>
+    <div *ngIf="someError"  class="container col-mg-12 text-center" style="padding-top: 50px;">
+      <span class="alert alert-danger">{{someErrorMessage}}</span>
+    </div>
+    <div class="container col-md-4 col-sm-4 col-lg-2 col-xl-2 form-group" style="padding-top: 50px;">
       <div class="row k-input"><input autofocus class="form-control" type="text" value="" placeholder="Kinesis Stream Name" #streamName /></div>
       <div class="row k-input"><input autofocus class="form-control" type="text" value="" placeholder="AWS Region" #region /></div>
       <div class="row k-input"><input autofocus class="form-control" type="text" value="" placeholder="Access Key" #accessKey /></div>
