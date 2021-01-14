@@ -23,3 +23,19 @@ RUN ansible-playbook /home/ansible/playbooks/setup-angular-app.yml
 
 EXPOSE 80
 CMD ["apache2ctl", "-D", "FOREGROUND"]
+
+## Below is for development purposes only
+# FROM ubuntu:20.04
+# RUN apt-get update
+# RUN apt-get install curl gcc g++ make git -y
+# EXPOSE 4200
+
+# RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
+# RUN apt-get install nodejs -y
+# RUN npm install -g npm
+# RUN npm install -g @angular/cli
+
+# WORKDIR /home/kinesis-live-angular-app
+
+# docker image build -t kinesis-live-image .
+# docker run -p 4200:4200 -v /Users/brocktubre/Desktop/Projects/Content-AWS-Certified-Data-Analytics---Speciality/Lab_Joining_Enriching_Transforming_Streaming_Data_Amazon_Kinesis/dockerized-angular-app/:/home/kinesis-live-angular-app/site -it kinesis-live-image

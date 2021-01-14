@@ -33,6 +33,10 @@ export class KinesisHelperComponent implements OnInit {
   }
 
   public startStream() {
+
+    this.isLoadingData = false;
+    this.someError = false;
+
     const secretAccessKey = this.secretAccessKey.nativeElement.value;
     const streamName = this.streamName.nativeElement.value;
     const accessKey = this.accessKey.nativeElement.value;
@@ -53,6 +57,9 @@ export class KinesisHelperComponent implements OnInit {
           this.isLoadingData = false;
           this.someError = true;
           this.someErrorMessage = error;
+          if(this.someErrorMessage == 'NetworkingError: Network Failure') {
+            this.someErrorMessage = 'NetworkingError: Stream name and region combination is invalid.'
+          }
           this.loadingSub.unsubscribe();
       });
     });
