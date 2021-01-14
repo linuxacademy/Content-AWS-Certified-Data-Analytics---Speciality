@@ -25,6 +25,7 @@ exports.handler = async (event, context, callback) => {
                 "user_id":  { S: user.user_id }, 
                 "first_name":  { S: user.first_name }, 
                 "last_name":  { S: user.last_name }, 
+                "email":  { S: user.email }, 
                 "street_number":  { N: user.street_number.toString() }, 
                 "street_name":  { S: user.street_name }, 
                 "city":  { S: user.city }, 
