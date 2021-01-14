@@ -24,13 +24,22 @@ export class KinesisHelperService {
     const order_id = uuid.v4();
     let order = {};
     let items = [];
+    let user_ids = [];
     for(let i = 0; i < Math.floor(Math.random() * 5) + 1; i++){
       items.push(this.grocery_items[Math.floor(Math.random() * this.grocery_items.length) - 1])
     }
+
+    for(let i = 0; i < 500; i++) {
+      user_ids.push('uid_'+i);
+    }
+
+    let user_id = user_ids[Math.floor(Math.random() * (user_ids.length - 1))]
+
     
     order["items"] = items;
     order["order_id"] = order_id;
     order["total_cost"] = ((Math.random() * 199.99) + 1.00).toFixed(2)
+    order["user_id"] = user_id;
 
     var payload = JSON.stringify(order);
 
