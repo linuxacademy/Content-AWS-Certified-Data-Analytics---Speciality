@@ -1,7 +1,7 @@
 import boto3, json, base64
 
 TABLE_NAME = 'users-information'
-OUTPUT_STREAM_NAME = 'enriched-orders'
+OUTPUT_STREAM_NAME = '<OUTPUT_STREAM_NAME>'
 
 def lambda_handler(event, context):
    
@@ -40,6 +40,7 @@ def lambda_handler(event, context):
         raise Exception('FailedRecordCount = %d' % response['FailedRecordCount'])
     else:
         print('Successfully put %d record(s) onto output stream.' % len(enriched_orders_list))
+        print(*enriched_orders_list, sep = ", ")
     
 def get_records(id_set):
     dynamodb_client = boto3.client('dynamodb')
