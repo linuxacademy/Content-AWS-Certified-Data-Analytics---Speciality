@@ -159,8 +159,8 @@ Resources:
       - LnLambdaExecutionAndDynamoRole
     Properties:
       Code:
-        S3Bucket: !Sub 'lambda-zips-${AWS::Region}-acg'
-        S3Key: 'create-users-dynamodb-lambda.zip'
+        S3Bucket: 'das-c01-data-analytics-specialty'
+        S3Key: 'Lab_Joining_Enriching_Transforming_Streaming_Data_Amazon_Kinesis/create-users-dynamodb-lambda.zip'
       Handler: index.handler
       Runtime: nodejs12.x
       Role: !GetAtt LnLambdaExecutionAndDynamoRole.Arn
