@@ -1,0 +1,97 @@
+body {
+    background-image: linear-gradient(#70e7f7a2, #dddddd);
+}
+
+body,
+html {
+    height: 100%;
+}
+
+table {
+    table-layout: fixed;
+    word-wrap: break-word;
+}
+
+th {
+    width: 5%;
+}
+
+.custombg {
+    background-color: #a4f0fa;
+}
+
+.statusbox {
+    padding-top: 10px;
+    padding-right: 10px;
+}
+
+.welcome {
+    position: absolute;
+    padding-top: 40px;
+    padding-left: 10px;
+}
+
+.toppad {
+    padding-top: 10px;
+}
+
+.contentbox {
+    max-height: 95vh;
+    padding: 0px;
+    background-image: linear-gradient(#dddddd, #70e7f7a2);
+}
+
+.countbox {
+    position: absolute;
+    top: 65px;
+    left: 30px;
+}
+
+.filterbox {
+    position: absolute;
+    bottom: 65px;
+    left: 30px;
+}
+
+.loadbox {
+    position: absolute;
+    top: 45vh;
+    left: 45vw;
+}
+
+.circle {
+    margin: 0 auto;
+    border-radius: 50%;
+    border: 10px solid rgba(0, 0, 0, 0);
+    border-top-color: #347fc3;
+  }
+  
+  .circle1-1, .circle1-2, .circle1-3, .circle1-4, .circle1-5, .circle1-6 {
+    height: 100px;
+    width: 100px;
+    margin-top: 15px;
+  }
+  
+  .circle2-1, .circle2-2, .circle2-3, .circle2-4, .circle2-5, .circle2-6 {
+    height: 70px;
+    width: 70px;
+    margin-top: 5px;
+  }
+  
+  .circle3-1, .circle3-2, .circle3-3, .circle3-4, .circle3-5, .circle3-6 {
+    height: 40px;
+    width: 40px;
+    margin-top: 5px;
+  }
+  
+  .circle1 {
+    -webkit-animation: load1 4s infinite;
+  }
+  
+  @-webkit-keyframes load1 {
+    0% {
+    }
+    100% {
+      -webkit-transform: rotate(360deg);
+    }
+  }

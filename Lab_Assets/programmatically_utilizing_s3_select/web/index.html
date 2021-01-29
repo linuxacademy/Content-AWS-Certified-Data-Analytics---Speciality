@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Random Users!</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="randomusers.css">
+    <link rel="icon" type="image/png" href="icon.png">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+        <span class="navbar-brand">Random Users!</span>
+    </nav>
+    <div class = "countbox">
+        <h3>User Count: <span data-bind = "text: userCount"></span></h3>
+    </div>
+    <div class = "filterbox">
+        <form data-bind = "submit: filterUsers">
+            <div class = "filter-group">
+                <label for="filterFirst">First Name:</label>
+                <input type = "filterFirst" class = "form-control" id="firstname" data-bind = "value: filterFirst">
+            </div>
+            <div class = "filter-group">
+                <label for="filterLast">Last Name:</label>
+                <input type = "filterLast" class = "form-control" id="lastname" data-bind = "value: filterLast">
+            </div>
+            <div class = "filter-group">
+                <label for="filterAge">Age:</label>
+                <input type = "filterAge" class = "form-control" id="age" data-bind = "value: filterAge">
+            </div>
+            <div class = "filter-group">
+                <label for="filterCountry">Country:</label>
+                <input type = "filterCountry" class = "form-control" id="country" data-bind = "value: filterCountry">
+            </div>
+            <div class = "filter-group">
+                <label for="filterUState">State:</label>
+                <input type = "filterUState" class = "form-control" id="state" data-bind = "value: filterUState">
+            </div>
+            <button class = "btn btn-primary mt-2" type="submit">Filter</button> 
+        </form>
+    </div>
+    <div data-bind="loading-animation: IsLoading" class = "loadbox"></div>
+    <div data-bind = "class: tableClass" class = "d-none">
+        <div class = "table"> 
+            <table>
+                <tr class = "thead-dark text-center">
+                    <th>Picture</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Age</th>
+                    <th>Country</th>
+                    <th>State</th>
+                </tr>
+            <!-- ko foreach: users -->
+                <tr>
+                    <td class = "text-center"><img class="img-thumbnail" data-bind = "attr: {'src':$data.picture.medium}"/></td>
+                    <td class = "text-center"><span data-bind = "text: $data.name.first"></span></td>
+                    <td class = "text-center"><span data-bind = "text: $data.name.last"></span></td>
+                    <td class = "text-center"><span data-bind = "text: $data.dob.age"></span></td>
+                    <td class = "text-center"><span data-bind = "text: $data.location.country"></span></td>
+                    <td class = "text-center"><span data-bind = "text: $data.location.state"></span></td>
+                </tr>
+            <!-- /ko -->
+            </table>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="randomusers.js"></script>
+</body>
+
+</html>
