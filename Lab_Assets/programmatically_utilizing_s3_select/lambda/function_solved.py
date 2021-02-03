@@ -29,12 +29,17 @@ def filter_data(filters):
             s3_keys.append(object['Key'])
 
     # Process our filters into a single WHERE clause for our S3 Select query.
-    filter_string = ""
     for key, value in filters.items():
-        if len(filter_string) == 0:
-            filter_string += f's3o.{key} = \'{value}\''
+        if key == "dob.age":
+            if len(filter_string) == 0:
+                filter_string += f's3o.{key} = {value}'
+            else:
+                filter_string += f' AND s3o.{key} = {value}'
         else:
-            filter_string += f' AND s3o.{key} = \'{value}\''
+            if len(filter_string) == 0:
+                filter_string += f's3o.{key} = \'{value}\''
+            else:
+                filter_string += f' AND s3o.{key} = \'{value}\''
 
     # For each of the S3 keys gathered above we're going to make a select_object_content() call to our data storage bucket. We use the query filter_string generated above in our WHERE clause.       
     data = []

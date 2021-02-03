@@ -1,0 +1,1 @@
+aws redshift create-cluster --node-type dc2.large --number-of-nodes 2 --master-username john --master-user-password Strongpass1 --cluster-identifier cli-cluster

@@ -9,7 +9,8 @@ var ViewModel = function () {
     self.filterAge = ko.observable();
     self.filterCountry = ko.observable();
     self.filterUState = ko.observable();
-    var tableVis = "container overflow-auto contentbox w-75"
+    var apigateway = "APGATEWAY";
+    var tableVis = "container overflow-auto contentbox w-75";
     
     var displayValue = function(element, valueAccessor){
         var value = ko.utils.unwrapObservable(valueAccessor());
@@ -45,12 +46,12 @@ var ViewModel = function () {
             "location.country": self.filterCountry(),
             "location.state": self.filterUState(),
         };
-        fetch('https://abwq7mqaeg.execute-api.us-west-2.amazonaws.com/users-test?filters='+JSON.stringify(filterData))
+        fetch(apigateway+'?filters='+JSON.stringify(filterData))
         .then(response => response.json())
         .then(data => self.users(data));
     };
 
-    fetch('https://abwq7mqaeg.execute-api.us-west-2.amazonaws.com/users-test')
+    fetch(apigateway)
         .then(response => response.json())
         .then(data => self.users(data));
     
