@@ -9,10 +9,10 @@ import csv
 # Initialize interfaces
 s3Client = boto3.client('s3',
                         region_name='us-east-1',
-                        aws_access_key_id='AKIAV6AYWBLB2FPFZ7UP',
-                        aws_secret_access_key='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')
+                        aws_access_key_id='XXX',
+                        aws_secret_access_key='XXX')
 s3Resource = boto3.resource('s3')
-number_of_results = 50
+number_of_results = 500
 
 
 def createRecords(format, bucket_name, key, number_of_files):
@@ -29,8 +29,7 @@ def createJSONRecords(bucket_name, number_of_files):
 
     for _ in range(number_of_files):
         uuid_str = str(uuid.uuid4())
-        
-        # data = bytes(r.json())
+        json_data = ''
 
         for x in data:
             random_user_index = int(random.uniform(0, (number_of_results - 1)))
@@ -41,11 +40,9 @@ def createJSONRecords(bucket_name, number_of_files):
             Body = json_data,
             Bucket = bucket_name,
             Key = 'user-data-' + uuid_str + '.json',
-            # Key = 'file5.json',
         )
         print('Added {} file...').format(count)
         count = count + 1
-        time.sleep(5)
 
 def createCSVRecords(bucket_name, key, number_of_files):
     count = 1
@@ -84,6 +81,6 @@ def createCSVRecords(bucket_name, key, number_of_files):
         count = count + 1
         time.sleep(5)
 
-createRecords("csv", "das-c01-data-analytics-specialty", 'Data_Analytics_With_Spark_and_EMR/user-data-acg/', 500)
+createRecords("json", "user-data-acg", '', 100)
 
 # first job -  2:36:31
