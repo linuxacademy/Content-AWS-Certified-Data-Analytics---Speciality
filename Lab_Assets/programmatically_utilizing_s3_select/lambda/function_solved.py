@@ -29,6 +29,7 @@ def filter_data(filters):
             s3_keys.append(object['Key'])
 
     # Process our filters into a single WHERE clause for our S3 Select query.
+    filter_string = ''
     for key, value in filters.items():
         if key == "dob.age":
             if len(filter_string) == 0:
