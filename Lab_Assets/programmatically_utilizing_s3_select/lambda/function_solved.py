@@ -1,9 +1,10 @@
 import boto3
 import json
 
+# S3 bucket we'll be interacting with
+s3_bucket = ''
+
 def filter_data(filters):
-    # S3 bucket we'll be interacting with
-    s3_bucket = ''
     # Check our filters for any empty strings to ensure our S3 Select queries don't have empty where clauses.    
     empty_filters = []
     for key, value in filters.items():
@@ -65,8 +66,6 @@ def filter_data(filters):
     return data
 
 def get_data():
-    # S3 bucket we'll be interacting with
-    s3_bucket = ''
     # Because we need to combine data from multiple S3 objects, initialize a list to hold this data before returning it.
     data = []
     # Initialize an boto3 S3 client, and list the objects in our bucket. The data about the contents of our bucket will be stored in a list called s3_keys.
