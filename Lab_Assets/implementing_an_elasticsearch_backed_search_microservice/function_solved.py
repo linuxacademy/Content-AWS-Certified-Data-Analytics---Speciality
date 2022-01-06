@@ -29,17 +29,9 @@ def query_es(query_term):
         }
     }
     '''
-    es_query = {
-        'query': {
-            'simple_query_string': {
-                'query': query_term,
-                'default_operator': 'and'
-            }
-        }
-    }
     
     es_response = json.loads(json.dumps(es.search(index = 'frankenstein', body = json.dumps(es_query))))
-    print(es_response)
+    # print(es_response)
     
     response = {
         'total_hits': es_response["hits"]["total"]["value"],
